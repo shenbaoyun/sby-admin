@@ -1,0 +1,13 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://192.168.1.100:3306/sby_db_prod?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+      username: sby_admin
+      password: strong_password_123
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.no.NoLoggingImpl # 生产环境严禁打印SQL，影响性能

@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: sby-service
+  profiles:
+    active: dev # 激活开发环境配置（对应 application-dev.yml）
+
+  datasource:
+    # 显式指定数据源类型为 Druid
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # --- 基础连接池性能配置 ---
+      initial-size: 5      # 初始化时建立的物理连接个数
+      min-idle: 5          # 最小连接池数量
+      max-active: 20       # 最大连接池数量
+      max-wait: 60000      # 获取连接时最大等待时间（毫秒）
+
+      # --- 检测与回收配置 ---
+      # 间隔多久进行一次检测，检测需要关闭的空闲连接（毫秒）
+      time-between-eviction-runs-millis: 60000
+      # 一个连接在池中最小生存的时间（毫秒）
+      min-evictable-idle-time-millis: 300000
+
+      # --- 心跳与安全性配置 ---
+      validation-query: SELECT 1               # 用来检测连接是否有效的SQL
+      test-while-idle: true                    # 申请连接时检测，如果空闲时间大于检测间隔，则执行验证
+      test-on-borrow: false                    # 申请连接时直接执行验证，影响性能，建议关闭
+      test-on-return: false                    # 归还连接时直接执行验证，影响性能，建议关闭
+
+      # --- 监控与过滤器配置 ---
+      # 开启监控统计(stat)、防火墙/防SQL注入(wall)、日志(slf4j)
+      filters: stat,wall,slf4j
+      # 合并多个数据源的监控数据
+      use-global-data-source-stat: true
+
+# --- MyBatis Plus 公共配置 ---
+mybatis-plus:
+  # XML 映射文件的存放位置
+  mapper-locations: classpath*:/mapper/**/*.xml
+  # 实体类所在包，配置后在 XML 中可以简写类名
+  type-aliases-package: com.sby.project.entity
+
+  global-config:
+    banner: false # 关闭 MyBatis Plus 启动时的控制台 Logo
+    db-config:
+      id-type: assign_id           # 全局主键策略：雪花算法（适合分布式）
+      logic-delete-field: deleted  # 全局逻辑删除的实体字段名
+      logic-delete-value: 1        # 逻辑已删除值
+      logic-not-delete-value: 0    # 逻辑未删除值

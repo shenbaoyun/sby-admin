@@ -1,29 +1,65 @@
-# --- 系统与编辑器增强 ---
-.vscode/                 # 如果你用 VS Code 开发前端，这个文件夹通常不需要上传
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp                    # Vi/Vim 临时文件
-
-# --- 后端增强 ---
-.classpath               # Eclipse 相关文件（防止同事用不同 IDE 造成冲突）
+# ====================================================================
+# 1. 开发工具与 IDE (IDE & Editors)
+# ====================================================================
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
 .project
 .settings/
-HELP.md
-out/                     # IDEA 编译输出目录
-.idea
+.factorypath
+.springBeans
+.sts4-cache
+.apt_generated
+.nb-gradle/
+nbproject/
+/nbbuild/
+/dist/
+/nbdist/
 
-# --- 前端增强 ---
-.local
-.env.local               # 包含敏感信息（如 API Key）的本地环境变量
-.env.*.local
+# ====================================================================
+# 2. 编译产物与缓存 (Build & Cache)
+# ====================================================================
+target/
+out/
+build/
+bin/
+dist/
+node_modules/
+unpackage/
+.temp/
+.tmp/
+.gradle/
+local.properties
+Captures/
+
+# ====================================================================
+# 3. 日志与临时文件 (Logs & Temps)
+# ====================================================================
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.class
+*.swp
+.DS_Store
+hs_err_pid*
+replay_pid*
 
-# --- Android 开发增强 (如果你以后涉及原生插件) ---
-.gradle/
-build/
-local.properties
-Captures/
+# ====================================================================
+# 4. 环境与敏感信息 (Env & Security)
+# ====================================================================
+.local
+.env.local
+.env.*.local
+HELP.md
+.mvn/wrapper/maven-wrapper.jar
+
+# ====================================================================
+# 5. 特殊规则与排除 (Special Rules)
+# ====================================================================
+# 即使上面忽略了 target 或 build，也要确保源码不被误删
+!**/src/main/**
+!**/src/test/**
