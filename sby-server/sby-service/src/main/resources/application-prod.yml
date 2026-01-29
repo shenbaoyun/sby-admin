@@ -10,4 +10,4 @@ spring:
 
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.no.NoLoggingImpl # 生产环境严禁打印SQL，影响性能
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl # 生产环境严禁打印SQL，影响性能

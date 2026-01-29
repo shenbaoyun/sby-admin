@@ -18,7 +18,10 @@
         <file>${LOG_PATH}/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/info/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>100MB</maxFileSize> <maxHistory>30</maxHistory>     <totalSizeCap>10GB</totalSizeCap> </rollingPolicy>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>UTF-8</charset>
@@ -33,7 +36,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/error/error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>
-            <maxHistory>60</maxHistory> </rollingPolicy>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>UTF-8</charset>
@@ -41,11 +45,15 @@
     </appender>
 
     <appender name="ASYNC_INFO" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold> <queueSize>256</queueSize>                   <appender-ref ref="INFO_FILE" />
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <appender-ref ref="INFO_FILE" />
     </appender>
 
+    <!--    设置开发环境，查看日志调试 -->
     <springProfile name="dev">
         <logger name="com.sby.project.mapper" level="DEBUG" />
+
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="ASYNC_INFO" />
@@ -53,7 +61,10 @@
         </root>
     </springProfile>
 
+    <!--    设置生产环境，禁用日志-->
     <springProfile name="prod">
+        <logger name="com.sby.project.mapper" level="WARN" />
+
         <root level="INFO">
             <appender-ref ref="ASYNC_INFO" />
             <appender-ref ref="ERROR_FILE" />
