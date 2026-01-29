@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7487188-47a1-4982-9322-a9599a57f6ef" name="Changes" comment="" />
+    <list default="true" id="d7487188-47a1-4982-9322-a9599a57f6ef" name="Changes" comment="提交git忽略文件">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,11 +63,24 @@
       <option name="presentableId" value="Default" />
       <updated>1730212671460</updated>
       <workItem from="1769689827703" duration="1223000" />
-      <workItem from="1769691359657" duration="47000" />
+      <workItem from="1769691359657" duration="167000" />
     </task>
+    <task id="LOCAL-00001" summary="提交git忽略文件">
+      <option name="closed" value="true" />
+      <created>1769691448796</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1769691448796</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="提交git忽略文件" />
+    <option name="LAST_COMMIT_MESSAGE" value="提交git忽略文件" />
   </component>
 </project>

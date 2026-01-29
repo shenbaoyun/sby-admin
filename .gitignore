@@ -12,6 +12,7 @@
 .settings/
 HELP.md
 out/                     # IDEA 编译输出目录
+.idea
 
 # --- 前端增强 ---
 .local
