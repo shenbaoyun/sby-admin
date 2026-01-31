@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.sby.project.mapper") // 扫描你的 Mapper 接口
+@MapperScan("com.sby.project.**.mapper") // 扫描你的 Mapper 接口
 public class MybatisPlusConfig {
 
     /**
