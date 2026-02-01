@@ -22,6 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 public class LoginServiceImpl implements LoginService {
 
+    // 建议定义在常量类或 Service 顶部
+    private static final long ACCESS_EXPIRE_MINUTES = 30;
+    private static final long REFRESH_EXPIRE_DAYS = 7;
+
     @Autowired
     private SysUserMapper sysUserMapper;
 
@@ -38,32 +42,7 @@ public class LoginServiceImpl implements LoginService {
         SysUser user = sysUserMapper.selectOne(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getUsername, loginDTO.getUsername()));
 
-        // 2. 生成双 Token
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
-
-        // 生成 Access Token (有效期 30 分钟)
-//        String accessToken = JwtUtils.createToken(claims, 30 * 60 * 1000L);
-//        // 生成 Refresh Token (有效期 7 天)
-//        String refreshToken = JwtUtils.createToken(claims, 7 * 24 * 60 * 60 * 1000L);
-
-        // 生成 Access Token (有效期 30 分钟)
-        String accessToken = JwtUtils.createToken(claims, 30 * 1000L);
-        // 生成 Refresh Token (有效期 7 天)
-        String refreshToken = JwtUtils.createToken(claims, 2 * 60 * 1000L);
-
-        // 3. 存入 Redis (Key 区分开)
-        String accessKey = "login:access_token:" + user.getId();
-        String refreshKey = "login:refresh_token:" + user.getId();
-
-        stringRedisTemplate.opsForValue().set(accessKey, accessToken, 30, TimeUnit.MINUTES);
-        stringRedisTemplate.opsForValue().set(refreshKey, refreshToken, 7, TimeUnit.DAYS);
-
-        // 4. 返回给前端
-        Map<String, String> result = new HashMap<>();
-        result.put("accessToken", accessToken);
-        result.put("refreshToken", refreshToken);
-        return result;
+        return createAndStoreToken(user.getId(), user.getUsername());
     }
 
     @Override
@@ -83,29 +62,7 @@ public class LoginServiceImpl implements LoginService {
                 throw new RuntimeException("刷新令牌已失效，请重新登录");
             }
 
-            // 3. 校验通过，生成新的一对 Token
-            Map<String, Object> newClaims = new HashMap<>();
-            newClaims.put("userId", userId);
-            newClaims.put("username", username);
-
-            // 生成新的 AccessToken (30分钟) 和 RefreshToken (7天)
-//            String newAccessToken = JwtUtils.createToken(newClaims, 30 * 60 * 1000L);
-//            String newRefreshToken = JwtUtils.createToken(newClaims, 7 * 24 * 60 * 60 * 1000L);
-            String newAccessToken = JwtUtils.createToken(newClaims, 30 * 1000L);
-            String newRefreshToken = JwtUtils.createToken(newClaims, 2 * 60 * 1000L);
-
-            // 4. 更新 Redis
-            String accessKey = "login:access_token:" + userId;
-            String refreshKey = "login:refresh_token:" + userId;
-
-            stringRedisTemplate.opsForValue().set(accessKey, newAccessToken, 30, TimeUnit.MINUTES);
-            stringRedisTemplate.opsForValue().set(refreshKey, newRefreshToken, 7, TimeUnit.DAYS);
-
-            // 5. 返回
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("accessToken", newAccessToken);
-            tokens.put("refreshToken", newRefreshToken);
-            return tokens;
+            return createAndStoreToken(userId, username);
 
         } catch (Exception e) {
             log.error("Token刷新失败: {}", e.getMessage());
@@ -113,14 +70,38 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
+    private Map<String, String> createAndStoreToken(Long userId, String username) {
+        // 1. 准备 Claims
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("username", username);
+
+        // 2. 生成双 Token (统一计算毫秒数)
+        String accessToken = JwtUtils.createToken(claims, ACCESS_EXPIRE_MINUTES * 60 * 1000L);
+        String refreshToken = JwtUtils.createToken(claims, REFRESH_EXPIRE_DAYS * 24 * 60 * 60 * 1000L);
+
+        // 3. 存入 Redis
+        String accessKey = "login:access_token:" + userId;
+        String refreshKey = "login:refresh_token:" + userId;
+
+        stringRedisTemplate.opsForValue().set(accessKey, accessToken, ACCESS_EXPIRE_MINUTES, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(refreshKey, refreshToken, REFRESH_EXPIRE_DAYS, TimeUnit.DAYS);
+
+        // 4. 封装返回
+        Map<String, String> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("refreshToken", refreshToken);
+        return result;
+    }
+
     @Override
     public void logout() {
         Long userId = BaseContext.getCurrentId();
         if (userId != null) {
             // 1. 删除 AccessToken
-            stringRedisTemplate.delete("login:access:" + userId);
+            stringRedisTemplate.delete("login:access_token:" + userId);
             // 2. 删除 RefreshToken
-            stringRedisTemplate.delete("login:refresh:" + userId);
+            stringRedisTemplate.delete("login:refresh_token:" + userId);
             log.info("用户 ID: {} 已安全退出，Redis Token 已清除", userId);
         }
 

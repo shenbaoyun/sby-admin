@@ -51,12 +51,6 @@
                 <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-
-<!--    web已经在父工程spring-boot-starter-parent，所以不用定义        -->
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-starter-web</artifactId>-->
-<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 

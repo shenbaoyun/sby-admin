@@ -1,10 +1,10 @@
 package com.sby.project.login.controller;
 
 import com.sby.project.common.result.Result;
+import com.sby.project.login.dto.RefreshDTO;
 import com.sby.project.login.service.LoginService;
-import com.sby.project.login.service.impl.LoginServiceImpl;
 import com.sby.project.login.dto.LoginDTO;
-import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,32 +13,22 @@ import java.util.HashMap;
 
 @Slf4j
 @RestController
-@RequestMapping
+@RequestMapping("/auth") // 建议增加统一前缀
 public class LoginController {
 
     @Autowired
     private LoginService loginService;
 
     @PostMapping("/login")
-    public Result<Map<String, String>> login(@RequestBody LoginDTO loginDTO) {
-        // 现在返回的是包含 accessToken 和 refreshToken 的 Map
-        Map<String, String> tokens = loginService.login(loginDTO);
-        return Result.success(tokens);
+    public Result<Map<String, String>> login(@RequestBody @Valid LoginDTO loginDTO) {
+        return Result.success(loginService.login(loginDTO));
     }
 
-    /**
-     * 专门用于续期的接口
-     * 前端在 AccessToken 过期后，携带 RefreshToken 请求此接口
-     */
     @PostMapping("/refresh")
-    public Result<Map<String, String>> refresh(@RequestParam String refreshToken) {
-        Map<String, String> newTokens = loginService.refreshToken(refreshToken);
-        return Result.success(newTokens);
+    public Result<Map<String, String>> refresh(@RequestBody @Valid RefreshDTO refreshDTO) {
+        return Result.success(loginService.refreshToken(refreshDTO.getRefreshToken()));
     }
 
-    /**
-     * 退出登录
-     */
     @PostMapping("/logout")
     public Result<String> logout() {
         loginService.logout();

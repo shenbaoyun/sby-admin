@@ -61,3 +61,28 @@ mybatis-plus:
       logic-delete-field: deleted  # 全局逻辑删除的实体字段名
       logic-delete-value: 1        # 逻辑已删除值
       logic-not-delete-value: 0    # 逻辑未删除值
+# --- SpringDoc & Knife4j 配置 (新增核心部分) ---
+springdoc:
+  cache:
+    disabled: true # 禁用缓存，确保每次都是最新的扫描结果
+  api-docs:
+    path: /v3/api-docs        # 数据源路径
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html    # 访问路径
+    tags-sorter: alpha
+    operations-sorter: alpha
+  group-config:
+    - group: default
+      paths-to-match: /** # 扫描所有接口
+      packages-to-scan: com.sby.project
+  # 解决 Spring Boot 3.5 某些情况下的路径解析问题
+  override-with-generic-response: true
+
+knife4j:
+  enable: true                # 开启 Knife4j 增强
+  setting:
+    language: zh_cn           # 强制中文
+    enableSwaggerModels: true # 显示 Model
+    enableFooter: false       # 隐藏页脚
+    enableReloadCache: true   # 开启缓存修复

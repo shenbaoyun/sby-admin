@@ -19,16 +19,20 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        log.info("*****************************************************");
-        log.info("第一步，注册拦截器");
-        // 注册自定义拦截器
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/**")             // 拦截所有请求
-                .excludePathPatterns(               // 排除不需要拦截的路径
-                        "/login",                   // 登录接口放行
-                        "/error",                   // 排除框架异常路径
-                        "/favicon.ico",              // 排除浏览器图标请求
-                        "/refresh"                  // token续期接口
+                .addPathPatterns("/**")
+                // WebConfig.java
+                .excludePathPatterns(
+                        "/auth/login",
+                        "/auth/refresh",
+                        "/error",
+                        "/favicon.ico",
+                        // --- Knife4j & Swagger 放行路径 ---
+                        "/doc.html",            // Knife4j 的主页
+                        "/swagger-ui.html",     // 原生 Swagger 主页
+                        "/swagger-ui/**",       // Swagger 静态资源
+                        "/v3/api-docs/**",      // 关键：数据源子路径（如 swagger-config）
+                        "/webjars/**"           // 静态资源文件
                 );
     }
 }
