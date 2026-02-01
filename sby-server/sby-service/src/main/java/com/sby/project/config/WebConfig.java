@@ -1,6 +1,8 @@
 package com.sby.project.config;
 
-import com.sby.project.login.interceptor.LoginInterceptor;
+import com.sby.project.common.interceptor.LoginInterceptor;
+import com.sby.project.common.interceptor.PermissionInterceptor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -14,25 +16,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
+    // 定义统一的白名单
+    private static final String[] WHITE_LIST = {
+            "/auth/login",
+            "/auth/refresh",
+            "/error",
+            "/favicon.ico"
+    };
+
+    @Resource
     private LoginInterceptor loginInterceptor;
+
+    @Resource
+    private PermissionInterceptor permissionInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 先检查登录
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
-                // WebConfig.java
-                .excludePathPatterns(
-                        "/auth/login",
-                        "/auth/refresh",
-                        "/error",
-                        "/favicon.ico",
-                        // --- Knife4j & Swagger 放行路径 ---
-                        "/doc.html",            // Knife4j 的主页
-                        "/swagger-ui.html",     // 原生 Swagger 主页
-                        "/swagger-ui/**",       // Swagger 静态资源
-                        "/v3/api-docs/**",      // 关键：数据源子路径（如 swagger-config）
-                        "/webjars/**"           // 静态资源文件
-                );
+                .excludePathPatterns(WHITE_LIST);
+
+        // 再检查权限
+        registry.addInterceptor(permissionInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(WHITE_LIST);
     }
 }

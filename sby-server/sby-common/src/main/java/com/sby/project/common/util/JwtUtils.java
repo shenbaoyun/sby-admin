@@ -1,4 +1,4 @@
-package com.sby.project.login.util;
+package com.sby.project.common.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,7 +1,7 @@
-package com.sby.project.sys.mapper;
+package com.sby.project.system.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.sby.project.sys.entity.SysUser;
+import com.sby.project.system.user.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

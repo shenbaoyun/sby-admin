@@ -1,4 +1,4 @@
-package com.sby.project.config.mybatis;
+package com.sby.project.common.config.mybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -25,6 +25,7 @@ public class MybatisPlusConfig {
 
         // 2. 分页插件（最后执行，因为它要对 SQL 进行最后的物理分页封装）
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+
 
         return interceptor;
     }

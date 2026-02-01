@@ -1,7 +1,7 @@
-package com.sby.project.login.interceptor;
+package com.sby.project.common.interceptor;
 
 import com.sby.project.common.context.BaseContext;
-import com.sby.project.login.util.JwtUtils;
+import com.sby.project.common.util.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +25,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("第二步，执行拦截器");
+        // 如果是 OPTIONS 请求，直接放行
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
         // 1. 从请求头获取 AccessToken
         String token = request.getHeader("Authorization");
 
@@ -39,7 +43,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
             // 3. 校验 Redis 中的 AccessToken
             // 只有 Redis 里存在且一致，才算真的在线
-            String redisKey = "login:access_token:" + userId;
+            String redisKey = "login:access:" + userId;
             String redisToken = stringRedisTemplate.opsForValue().get(redisKey);
 
             System.out.println("redisToken = " + redisToken);
